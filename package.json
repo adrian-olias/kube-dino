@@ -1,0 +1,14 @@
+{
+  "name": "kube-dino",
+  "version": "0.1.0",
+  "private": true,
+  "description": "API behind the Kube Dino panel: the live pods of its namespace and a chaos button that evicts one.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "test": "node --test \"test/**/*.test.js\""
+  }
+}
