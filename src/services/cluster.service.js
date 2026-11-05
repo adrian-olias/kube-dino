@@ -35,10 +35,5 @@ export function createClusterService({ kubernetes, namespace, selector, cacheMs,
       });
       return promise;
     },
-
-    // Called after an eviction, so the next poll shows it.
-    invalidate() {
-      cached = null;
-    },
   };
 }

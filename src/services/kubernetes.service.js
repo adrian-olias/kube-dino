@@ -1,4 +1,4 @@
-// The Kubernetes API calls the app needs: list pods, read their metrics, evict one.
+// The Kubernetes API calls the app needs: list pods and read their metrics.
 //
 // In the cluster it authenticates with the pod's ServiceAccount token, and
 // trusts the cluster CA through NODE_EXTRA_CA_CERTS (set in the Dockerfile).
@@ -41,19 +41,6 @@ export function createKubernetesService({ apiUrl, timeoutMs = 5000 } = {}) {
       } catch {
         return null;
       }
-    },
-
-    // Uses the Eviction API, so the PodDisruptionBudget can refuse.
-    // Returns false when it does.
-    async evictPod(namespace, name) {
-      const res = await request("POST", `/api/v1/namespaces/${namespace}/pods/${encodeURIComponent(name)}/eviction`, {
-        apiVersion: "policy/v1",
-        kind: "Eviction",
-        metadata: { name, namespace },
-      });
-      if (res.status === 429) return false;
-      if (res.status !== 200 && res.status !== 201) throw new Error(`evicting ${name} returned ${res.status}`);
-      return true;
     },
   };
 }

@@ -2,19 +2,19 @@
 
 export const NOW = Date.parse("2026-11-02T20:00:00Z");
 
-export function pod(name, { readyFor = 600, terminating = false, created = "2026-11-02T19:00:00Z" } = {}) {
+export function pod(name, { ready = true, terminating = false, created = "2026-11-02T19:00:00Z", restarts = 0 } = {}) {
   return {
     metadata: {
       name,
       creationTimestamp: created,
       ...(terminating ? { deletionTimestamp: "2026-11-02T19:59:59Z" } : {}),
     },
+    spec: { containers: [{ image: "ghcr.io/adrian-olias/kube-dino:0.2.0" }] },
     status: {
       phase: "Running",
-      // readyFor: seconds since the pod became ready, or null when it is not ready.
-      conditions: readyFor === null ? [] : [
-        { type: "Ready", status: "True", lastTransitionTime: new Date(NOW - readyFor * 1000).toISOString() },
-      ],
+      startTime: created,
+      conditions: [{ type: "Ready", status: ready ? "True" : "False" }],
+      containerStatuses: [{ restartCount: restarts, state: { running: {} } }],
     },
   };
 }

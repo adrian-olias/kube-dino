@@ -2,44 +2,46 @@
 import { createServer } from "node:http";
 import { pathToFileURL } from "node:url";
 import { loadConfig } from "./config.js";
-import { createChaosController } from "./controllers/chaos.controller.js";
 import { createClusterController } from "./controllers/cluster.controller.js";
+import { createGamesController } from "./controllers/games.controller.js";
 import { createHealthController } from "./controllers/health.controller.js";
 import { createRoutes } from "./routes/index.js";
-import { createChaosService } from "./services/chaos.service.js";
 import { createClusterService } from "./services/cluster.service.js";
+import { createGamesService } from "./services/games.service.js";
 import { createKubernetesService, inClusterNamespace } from "./services/kubernetes.service.js";
+import { openStore } from "./services/store.service.js";
 import { createRouter } from "./utils/http.js";
 
 // Logs one JSON object per line.
 const jsonLog = (fields) => console.log(JSON.stringify(fields));
 
-export function createApp({ config, kubernetes, now = Date.now, log = jsonLog }) {
-  const { namespace, selector, self, cooldownSeconds, cacheMs } = config;
-
-  const clusterService = createClusterService({ kubernetes, namespace, selector, cacheMs, now });
-  const chaosService = createChaosService({ kubernetes, clusterService, namespace, selector, self, cooldownSeconds, now, log });
+export function createApp({ config, kubernetes, store, now = Date.now, log = jsonLog }) {
+  const { namespace, selector, cacheMs } = config;
 
   const routes = createRoutes({
     health: createHealthController(),
-    cluster: createClusterController({ clusterService }),
-    chaos: createChaosController({ chaosService }),
+    cluster: createClusterController({ clusterService: createClusterService({ kubernetes, namespace, selector, cacheMs, now }) }),
+    games: createGamesController({ gamesService: createGamesService({ now, store }) }),
   });
 
   return createServer(createRouter(routes, { log }));
 }
 
-function start() {
+async function start() {
   const config = loadConfig();
   config.namespace ??= inClusterNamespace();
 
-  const server = createApp({ config, kubernetes: createKubernetesService({ apiUrl: config.apiUrl }) });
+  // If the store can't open, the app still serves the panel; games just aren't counted.
+  const store = await openStore(config.dataFile, { log: jsonLog });
+  const server = createApp({ config, store, kubernetes: createKubernetesService({ apiUrl: config.apiUrl }) });
   server.listen(config.port, () => jsonLog({ msg: "listening", port: config.port, namespace: config.namespace }));
 
-  // Kubernetes sends SIGTERM before stopping the pod: finish open requests, then exit.
-  process.on("SIGTERM", () => {
-    server.close(() => process.exit(0));
+  // Kubernetes sends SIGTERM before stopping the pod. Writes stop first, so a
+  // replacement pod that is already starting never sees this one write again.
+  process.on("SIGTERM", async () => {
     setTimeout(() => process.exit(0), 10_000).unref();
+    await store.close();
+    server.close(() => process.exit(0));
   });
 }
 

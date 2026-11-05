@@ -5,3 +5,4 @@
 
 # Local settings, see .env.example
 .env
+data/
