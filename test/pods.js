@@ -9,7 +9,7 @@ export function pod(name, { ready = true, terminating = false, created = "2026-1
       creationTimestamp: created,
       ...(terminating ? { deletionTimestamp: "2026-11-02T19:59:59Z" } : {}),
     },
-    spec: { containers: [{ image: "ghcr.io/adrian-olias/kube-dino:0.2.0" }] },
+    spec: { containers: [{ image: "ghcr.io/<owner>/kube-dino:0.2.0" }] },
     status: {
       phase: "Running",
       startTime: created,

@@ -24,7 +24,7 @@ export function restarts(pod) {
   return (pod.status?.containerStatuses ?? []).reduce((sum, c) => sum + (c.restartCount ?? 0), 0);
 }
 
-// The tag of the app's image, e.g. "0.2.0" for ghcr.io/adrian-olias/kube-dino:0.2.0.
+// The tag of the app's image, e.g. "0.2.0" for ghcr.io/<owner>/kube-dino:0.2.0.
 export function version(pod) {
   const image = pod.spec?.containers?.[0]?.image?.split("@")[0];
   if (!image) return null;
