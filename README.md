@@ -4,6 +4,8 @@ The Kube Dino page and the API behind its panel: the app's own pods and the game
 
 One container serves both. The page is at `/kube-dino/` and `/es/kube-dino/`, the API at `/api/`.
 
+![Kube Dino page](docs/kube-dino.png)
+
 ## Endpoints
 
 | Route | What it does |
