@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kube Dino Demo · Adrian Olias</title>
+  <meta name="description" content="Kube Dino running on a live Kubernetes backend. Play the game and watch the cluster behind it.">
+  <script>
+    // Applies the saved light or dark choice before the first paint.
+    try {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
+    } catch {}
+  </script>
+  <link rel="stylesheet" href="/kube-dino/css/base.css">
+  <link rel="stylesheet" href="/kube-dino/css/panel.css">
+  <link rel="stylesheet" href="/kube-dino/css/dino.css">
+  <script src="/kube-dino/js/theme.js" defer></script>
+  <script src="/kube-dino/js/dino.js" defer></script>
+</head>
+<body>
+  <header class="site-header wrap">
+    <a class="brand" href="/">Adrian Olias <span class="brand-role">· DevOps Engineer</span></a>
+    <nav aria-label="Main">
+      <a href="https://github.com/adrian-olias">GitHub</a>
+      <a href="https://www.linkedin.com/in/adriolias">LinkedIn</a>
+      <button id="theme-toggle" class="theme-toggle" type="button" hidden
+        data-light="Switch to light mode" data-dark="Switch to dark mode"></button>
+      <a class="lang" href="/es/kube-dino/" hreflang="es" lang="es">ES</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="play wrap" aria-labelledby="play-title">
+      <div class="game">
+        <div class="game-head">
+          <div>
+            <h1 id="play-title">Kube Dino Demo</h1>
+            <p class="hint">Play the game. See the platform behind it.</p>
+          </div>
+          <p class="score"><span class="best">HI <span id="dino-best">00000</span></span> <span id="dino-score">00000</span></p>
+        </div>
+        <div class="stage">
+          <canvas id="dino" tabindex="0" aria-label="Kube Dino. Press Space or tap to jump over failing pods."></canvas>
+          <p id="dino-overlay" class="overlay" data-start="Press Space or tap to play" data-over="Game over · Space or tap to try again">Press Space or tap to play</p>
+        </div>
+        <div class="stack">
+          <p>Built with k3s, Helm and Argo CD. <a href="/">Back to home</a></p>
+        </div>
+      </div>
+
+      <aside id="cluster" class="cluster is-offline" aria-labelledby="cluster-title">
+        <div class="cluster-head">
+          <h2 id="cluster-title"><span class="dot" aria-hidden="true"></span>Live backend</h2>
+          <span id="cluster-status" class="cluster-status" data-updated="Updated {s}s ago" data-offline="Not connected">Connecting…</span>
+        </div>
+        <p class="ready"><span id="cluster-ready" class="ready-value">–</span><span class="ready-label">Replicas ready</span></p>
+        <dl class="metrics">
+          <div><dt>CPU</dt><dd id="cluster-cpu">–</dd></div>
+          <div><dt>Memory</dt><dd id="cluster-memory">–</dd></div>
+        </dl>
+        <dl class="metrics">
+          <div><dt>Playing now</dt><dd id="games-playing">–</dd></div>
+          <div><dt>Global best</dt><dd id="games-best">–</dd></div>
+          <div><dt>Games played</dt><dd id="games-played">–</dd></div>
+        </dl>
+        <details class="inspect">
+          <summary>Inspect backend</summary>
+          <ul id="cluster-pods" class="pods" data-pod="Pod" data-status="Status" data-uptime="Uptime" data-restarts="Restarts" data-version="Version"></ul>
+        </details>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>© 2026 Adrian Olias</p>
+  </footer>
+</body>
+</html>

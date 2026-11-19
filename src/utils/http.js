@@ -37,8 +37,8 @@ export async function readJson(req, limit = 1024) {
 // Builds the request handler from the route table. A ":name" segment matches
 // any value and reaches the controller as params.name.
 // Controllers return { status, body, headers }.
-// Unknown path → 404, wrong method → 405, HttpError → its status, any other error → 503.
-export function createRouter(routes, { log }) {
+// Unknown path → fallback (the page files) or 404, wrong method → 405, HttpError → its status, any other error → 503.
+export function createRouter(routes, { log, fallback }) {
   const table = Object.entries(routes).map(([pattern, methods]) => ({ segments: pattern.split("/"), methods }));
 
   function match(pathname) {
@@ -59,7 +59,7 @@ export function createRouter(routes, { log }) {
   return async (req, res) => {
     const { pathname } = new URL(req.url, "http://localhost");
     const route = match(pathname);
-    if (!route) return sendJson(res, 404, { error: "not found" });
+    if (!route) return fallback ? fallback(req, res) : sendJson(res, 404, { error: "not found" });
 
     const controller = route.methods[req.method];
     if (!controller) {

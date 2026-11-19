@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kube Dino Demo · Adrian Olias</title>
+  <meta name="description" content="Kube Dino sobre un backend de Kubernetes en vivo. Juega y mira el clúster que hay detrás.">
+  <script>
+    // Applies the saved light or dark choice before the first paint.
+    try {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
+    } catch {}
+  </script>
+  <link rel="stylesheet" href="/kube-dino/css/base.css">
+  <link rel="stylesheet" href="/kube-dino/css/panel.css">
+  <link rel="stylesheet" href="/kube-dino/css/dino.css">
+  <script src="/kube-dino/js/theme.js" defer></script>
+  <script src="/kube-dino/js/dino.js" defer></script>
+</head>
+<body>
+  <header class="site-header wrap">
+    <a class="brand" href="/es/">Adrian Olias <span class="brand-role">· DevOps Engineer</span></a>
+    <nav aria-label="Principal">
+      <a href="https://github.com/adrian-olias">GitHub</a>
+      <a href="https://www.linkedin.com/in/adriolias">LinkedIn</a>
+      <button id="theme-toggle" class="theme-toggle" type="button" hidden
+        data-light="Cambiar a modo claro" data-dark="Cambiar a modo oscuro"></button>
+      <a class="lang" href="/kube-dino/" hreflang="en" lang="en">EN</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="play wrap" aria-labelledby="play-title">
+      <div class="game">
+        <div class="game-head">
+          <div>
+            <h1 id="play-title">Kube Dino Demo</h1>
+            <p class="hint">Juega. Mira la plataforma que hay detrás.</p>
+          </div>
+          <p class="score"><span class="best">HI <span id="dino-best">00000</span></span> <span id="dino-score">00000</span></p>
+        </div>
+        <div class="stage">
+          <canvas id="dino" tabindex="0" aria-label="Kube Dino. Pulsa Espacio o toca para saltar los pods que fallan."></canvas>
+          <p id="dino-overlay" class="overlay" data-start="Pulsa Espacio o toca para jugar" data-over="Game over · Espacio o toca para reintentar">Pulsa Espacio o toca para jugar</p>
+        </div>
+        <div class="stack">
+          <p>Hecha con k3s, Helm y Argo CD. <a href="/es/">Volver al inicio</a></p>
+        </div>
+      </div>
+
+      <aside id="cluster" class="cluster is-offline" aria-labelledby="cluster-title">
+        <div class="cluster-head">
+          <h2 id="cluster-title"><span class="dot" aria-hidden="true"></span>Backend en vivo</h2>
+          <span id="cluster-status" class="cluster-status" data-updated="Hace {s} s" data-offline="Sin conexión">Conectando…</span>
+        </div>
+        <p class="ready"><span id="cluster-ready" class="ready-value">–</span><span class="ready-label">Réplicas listas</span></p>
+        <dl class="metrics">
+          <div><dt>CPU</dt><dd id="cluster-cpu">–</dd></div>
+          <div><dt>Memoria</dt><dd id="cluster-memory">–</dd></div>
+        </dl>
+        <dl class="metrics">
+          <div><dt>Jugando ahora</dt><dd id="games-playing">–</dd></div>
+          <div><dt>Récord global</dt><dd id="games-best">–</dd></div>
+          <div><dt>Partidas jugadas</dt><dd id="games-played">–</dd></div>
+        </dl>
+        <details class="inspect">
+          <summary>Ver backend</summary>
+          <ul id="cluster-pods" class="pods" data-pod="Pod" data-status="Estado" data-uptime="Tiempo activo" data-restarts="Reinicios" data-version="Versión"></ul>
+        </details>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>© 2026 Adrian Olias</p>
+  </footer>
+</body>
+</html>

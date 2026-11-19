@@ -1,0 +1,106 @@
+/* Kube Dino and the live cluster */
+
+.play {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: 1.5rem;
+  align-items: start;
+  padding-top: 2.5rem;
+  padding-bottom: 2rem;
+}
+
+.play + section {
+  padding-top: 3rem;
+}
+
+.game-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.score {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.score .best {
+  margin-right: 0.75rem;
+  color: var(--muted);
+}
+
+.stage {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+  /* Taps and long presses on the game never select text or open the copy menu. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.game-head {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stage canvas {
+  display: block;
+  width: 100%;
+  /* Same scale as before (about 0.8 on a phone), but taller, so there is room
+     under the road for a finger and the runner keeps its field of view. */
+  height: clamp(264px, 33vw, 380px);
+  cursor: pointer;
+  touch-action: none; /* taps jump; the page doesn't scroll or zoom under a finger on the game */
+  -webkit-tap-highlight-color: transparent; /* no grey flash on each tap */
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline-offset: -3px;
+}
+
+.overlay {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  pointer-events: none;
+}
+
+@media (max-width: 52rem) {
+  .play {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Phones: 264px is 0.8 x WORLD_H, so the runner keeps its size and the road
+     gets more room below it for a finger. */
+  .stage canvas {
+    height: 264px;
+  }
+
+  /* The "Built with…" line and its link are not text to copy on a phone. */
+  .game .stack {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* The live panel under the game: its status dot and numbers are not text to copy either. */
+  .play .cluster {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+

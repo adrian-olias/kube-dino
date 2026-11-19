@@ -1,9 +1,20 @@
 # kube-dino
 
-API behind the Kube Dino panel on the [portfolio](https://github.com/adrian-olias/portfolio).
-It shows the app's own pods and counts the games played in the browser.
+The Kube Dino page and the API behind its panel. The panel shows the app's own
+pods and counts the games played in the browser.
 
-Plain Node.js with no dependencies, running on a distroless image.
+Plain Node.js with no dependencies, running on a distroless image. One container
+serves everything:
+
+- **Page** at `/kube-dino/` (English) and `/es/kube-dino/` (Spanish). Files are in
+  `public/`, under the same paths, and are copied into the image.
+- **API** at `/api/...` (see below).
+
+The ingress in `helm-charts-wrappers` sends `/kube-dino`, `/es/kube-dino` and `/api`
+to this app. The rest of the site is the [portfolio](https://github.com/adrian-olias/portfolio).
+
+`public/kube-dino/css/` and `public/kube-dino/js/` hold copies of `base.css`,
+`panel.css` and `theme.js`: the page doesn't depend on another repository.
 
 ## Endpoints
 

@@ -2,7 +2,7 @@
   "name": "kube-dino",
   "version": "0.1.0",
   "private": true,
-  "description": "API behind the Kube Dino panel: the live pods of its namespace and a chaos button that evicts one.",
+  "description": "Kube Dino page and the API behind its panel: the live pods of its namespace and a chaos button that evicts one.",
   "type": "module",
   "engines": {
     "node": ">=22"

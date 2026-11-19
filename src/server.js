@@ -11,6 +11,7 @@ import { createGamesService } from "./services/games.service.js";
 import { createKubernetesService, inClusterNamespace } from "./services/kubernetes.service.js";
 import { openStore } from "./services/store.service.js";
 import { createRouter } from "./utils/http.js";
+import { createStaticHandler } from "./utils/static.js";
 
 // Logs one JSON object per line.
 const jsonLog = (fields) => console.log(JSON.stringify(fields));
@@ -24,7 +25,8 @@ export function createApp({ config, kubernetes, store, now = Date.now, log = jso
     games: createGamesController({ gamesService: createGamesService({ now, store }) }),
   });
 
-  return createServer(createRouter(routes, { log }));
+  // Paths the API doesn't know are the page and its assets, under /kube-dino and /es/kube-dino.
+  return createServer(createRouter(routes, { log, fallback: createStaticHandler() }));
 }
 
 async function start() {
